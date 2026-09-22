@@ -1,0 +1,43 @@
+# Python and build artifacts
+__pycache__/
+*.py[cod]
+*.so
+.pytest_cache/
+.coverage
+coverage.xml
+htmlcov/
+build/
+dist/
+*.egg-info/
+.venv/
+venv/
+
+# Local configuration and secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+*.crt
+*.cer
+*.token
+*.secret
+secrets/
+credentials/
+private/
+
+# Vault data: keep source repositories free of any local vault
+vault.enc
+vault.json
+vault.db
+*.vault
+*.vault.enc
+.vault/
+
+# Editors and operating systems
+.DS_Store
+.idea/
+.vscode/
+*~
