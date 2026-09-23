@@ -14,6 +14,13 @@ master password using scrypt. The encrypted data is local only:
 or `$XDG_DATA_HOME/vault/vault.enc` when `XDG_DATA_HOME` is set. No vault data,
 keys, or master passwords belong in this source repository.
 
+## Repository safety
+
+This is a public source-code repository. It does not contain the maintainer's
+personal vault, credentials, master password, encryption key, or encrypted
+vault database. Each user's encrypted vault remains local at the path above;
+never commit it, a `.env` file, or any secret to this repository.
+
 ## Install
 
 From this repository:

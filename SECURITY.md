@@ -11,6 +11,8 @@ The encrypted vault is stored at `~/.local/share/vault/vault.enc` by default
 
 The master password and record secrets are never stored separately, logged, or
 accepted as normal command-line arguments. `add` uses hidden terminal input.
+This public source repository contains no personal vault database, master
+password, encryption key, or credential.
 
 ## What this does not protect
 
