@@ -88,7 +88,22 @@ def cmd_add(args: argparse.Namespace) -> None:
     exists = name in vault["entries"]
     if exists and not args.replace:
         raise UserError(f"Credential '{name}' already exists. Use --replace to overwrite it.")
-    secret = getpass.getpass("Secret (hidden): ")
+    if args.file is not None:
+        secret = args.file.read_text(encoding="utf-8")
+    elif args.multiline:
+        print("Paste text below. Enter a single period (.) on its own line to finish.")
+        lines = []
+        while True:
+            try:
+                line = getpass.getpass("Line (hidden): ")
+            except EOFError as error:
+                raise UserError("Multiline input ended before the '.' terminator; nothing saved.") from error
+            if line == ".":
+                break
+            lines.append(line)
+        secret = "\n".join(lines)
+    else:
+        secret = getpass.getpass("Secret (hidden): ")
     if not secret:
         raise UserError("Secret cannot be empty.")
     timestamp = now()
@@ -204,6 +219,9 @@ def build_parser() -> argparse.ArgumentParser:
     add.add_argument("--notes", help="Non-secret notes.")
     add.add_argument("--tag", action="append", help="Non-secret tag; repeatable.")
     add.add_argument("--replace", action="store_true", help="Replace an existing credential.")
+    source = add.add_mutually_exclusive_group()
+    source.add_argument("--multiline", action="store_true", help="Enter multiple hidden lines; a single period ends input.")
+    source.add_argument("--file", type=Path, help="Import UTF-8 text from a local file (the source file remains on disk).")
     add.set_defaults(handler=cmd_add)
 
     get = commands.add_parser("get", help="Print a credential secret.")
