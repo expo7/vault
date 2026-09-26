@@ -72,6 +72,25 @@ Retrieve a secret only when you deliberately need it:
 vault get quantelle-research-operator-token
 ```
 
+For recovery codes and accompanying instructions, use hidden multiline input.
+Paste the block, then enter a single `.` on its own line to finish:
+
+```sh
+vault add zoho-recovery --multiline
+vault get zoho-recovery
+```
+
+If you already have a UTF-8 text file, import its exact contents instead:
+
+```sh
+vault add zoho-recovery --file /path/to/recovery.txt
+```
+
+The source file is left in place and remains readable outside the vault. Keep
+it protected or remove it after checking the vault entry. Use `--replace` to
+overwrite an existing entry with either input method. A literal line containing
+only `.` cannot be entered in multiline mode; use `--file` for that case.
+
 Discovery commands never reveal secrets:
 
 ```sh
