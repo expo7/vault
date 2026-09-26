@@ -112,3 +112,29 @@ def test_storage_permissions_are_restrictive(
     if os.name != "nt":
         assert vault_file.stat().st_mode & 0o777 == 0o600
         assert vault_file.parent.stat().st_mode & 0o777 == 0o700
+
+
+def test_multiline_recovery_text_round_trip(monkeypatch, capsys) -> None:
+    secret = "Recovery codes\n1111 2222 3333 4444\n5555 6666 7777 8888\n\nGenerate more in Zoho settings."
+    status, output, error = invoke(
+        monkeypatch, capsys, ["add", "zoho-recovery", "--multiline"],
+        ["master-password", "master-password", *secret.split("\n"), "."],
+    )
+    assert (status, error) == (0, "")
+    assert secret not in output
+    status, output, error = invoke(monkeypatch, capsys, ["get", "zoho-recovery"], ["master-password"])
+    assert (status, output, error) == (0, secret + "\n", "")
+
+
+def test_import_file_round_trip(monkeypatch, capsys, tmp_path) -> None:
+    secret = "1111 2222 3333 4444\nInstructions to regenerate.\n"
+    source = tmp_path / "recovery.txt"
+    source.write_text(secret, encoding="utf-8")
+    status, output, error = invoke(
+        monkeypatch, capsys, ["add", "zoho-recovery", "--file", str(source)],
+        ["master-password", "master-password"],
+    )
+    assert (status, error) == (0, "")
+    assert secret not in output
+    status, output, error = invoke(monkeypatch, capsys, ["get", "zoho-recovery"], ["master-password"])
+    assert (status, output, error) == (0, secret + "\n", "")
